@@ -1,0 +1,144 @@
+{
+  "@@locale": "es",
+
+  "modeMarathon": "Maratón",
+  "modeSprint": "Sprint · 40 líneas",
+  "modeUltra": "Ultra · 2 minutos",
+  "modeZen": "Zen · sin fin",
+  "modeMarathonShort": "Maratón",
+  "modeSprintShort": "Sprint",
+  "modeUltraShort": "Ultra",
+
+  "menuRecords": "Récords",
+  "menuSettings": "Ajustes",
+  "menuBest": "Tu récord: {score}",
+  "@menuBest": {
+    "placeholders": { "score": { "type": "String" } }
+  },
+
+  "hudHold": "Hold",
+  "hudNext": "Next",
+  "hudScore": "Puntos",
+  "hudLevel": "Nivel",
+  "hudLines": "Líneas",
+  "hudRemaining": "Faltan",
+  "hudTime": "Tiempo",
+  "hudCombo": "Combo",
+  "hudPause": "PAUSA",
+
+  "clearTetris": "¡TETRIS!",
+  "clearTriple": "TRIPLE",
+  "clearTSpin": "T-SPIN",
+  "clearTSpinDouble": "T-SPIN DOBLE",
+  "clearTSpinTriple": "T-SPIN TRIPLE",
+  "clearTSpinMini": "T-SPIN MINI",
+
+  "gameOverTitle": "Fin de la partida",
+  "gameCompletedTitle": "¡Completado!",
+  "gameOverScore": "Puntos: {score}",
+  "@gameOverScore": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+  "gameOverLines": "Líneas: {lines}",
+  "@gameOverLines": {
+    "placeholders": { "lines": { "type": "int" } }
+  },
+  "gameOverLevel": "Nivel: {level}",
+  "@gameOverLevel": {
+    "placeholders": { "level": { "type": "int" } }
+  },
+  "actionExit": "Salir",
+  "actionRetry": "Otra vez",
+
+  "reviveTitle": "¿Continuar?",
+  "reviveBody": "Ve un vídeo y sigue jugando con la parte de arriba despejada, conservando tus {score} puntos.",
+  "@reviveBody": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+  "reviveOnce": "Solo una vez por partida.",
+  "reviveDecline": "No, terminar",
+  "reviveAccept": "Ver vídeo",
+
+  "recordsTitle": "Récords",
+  "recordsLocalTab": "Tus récords",
+  "recordsGlobalTab": "Global",
+  "recordsEmpty": "Todavía no has jugado a este modo",
+  "recordsLinesDate": "{lines} líneas · {date}",
+  "@recordsLinesDate": {
+    "placeholders": {
+      "lines": { "type": "int" },
+      "date": { "type": "String" }
+    }
+  },
+  "recordsLinesLevelDate": "{lines} líneas · nivel {level} · {date}",
+  "@recordsLinesLevelDate": {
+    "placeholders": {
+      "lines": { "type": "int" },
+      "level": { "type": "int" },
+      "date": { "type": "String" }
+    }
+  },
+
+  "rangeToday": "Hoy",
+  "rangeWeek": "Semana",
+  "rangeAllTime": "Histórico",
+
+  "leaderboardOfflineTitle": "Ranking global no disponible",
+  "leaderboardOfflineBody": "Todavía no se ha conectado el servidor. Tus récords locales sí se están guardando.",
+  "leaderboardErrorTitle": "No se pudo cargar",
+  "leaderboardErrorBody": "Comprueba tu conexión y desliza hacia abajo para reintentar.",
+  "leaderboardEmptyTitle": "Ranking vacío",
+  "leaderboardEmptyBody": "Nadie ha puntuado todavía en este periodo. Podrías ser el primero.",
+  "leaderboardYou": "{name}  (tú)",
+  "@leaderboardYou": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "leaderboardLines": "{lines} líneas",
+  "@leaderboardLines": {
+    "placeholders": { "lines": { "type": "int" } }
+  },
+  "leaderboardLinesLevel": "{lines} líneas · nivel {level}",
+  "@leaderboardLinesLevel": {
+    "placeholders": {
+      "lines": { "type": "int" },
+      "level": { "type": "int" }
+    }
+  },
+  "anonymous": "Anónimo",
+
+  "settingsTitle": "Ajustes",
+  "settingsSectionSound": "Sonido",
+  "settingsSfx": "Efectos de sonido",
+  "settingsMusic": "Música",
+  "settingsVibration": "Vibración",
+  "settingsSectionGame": "Juego",
+  "settingsGhost": "Pieza fantasma",
+  "settingsGhostHint": "Muestra dónde va a caer la pieza",
+  "settingsButtons": "Botones en pantalla",
+  "settingsButtonsHint": "Si los quitas, se juega solo con gestos",
+  "settingsSectionOnline": "Ranking global",
+  "settingsNameLabel": "Tu nombre en el ranking",
+  "settingsNameHint": "Si lo dejas vacío aparecerás como «Anónimo»",
+  "settingsSignIn": "Iniciar sesión con Google",
+  "settingsSignInHint": "Conserva tus récords aunque cambies de móvil o reinstales",
+  "settingsSignedInAs": "Sesión iniciada como {name}",
+  "@settingsSignedInAs": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "settingsSignOut": "Cerrar sesión",
+  "signInFailed": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+  "signInNoServices": "Este dispositivo no tiene servicios de Google.",
+  "signInRestored": "Recuperamos el historial de esa cuenta.",
+
+  "settingsSectionTheme": "Tema",
+  "settingsSectionLanguage": "Idioma",
+  "languageAuto": "Automático",
+  "languageAutoHint": "Sigue el idioma del teléfono",
+  "languageSpanish": "Español",
+  "languageEnglish": "English",
+
+  "themeDark": "Oscuro",
+  "themeLight": "Claro",
+  "themeNeon": "Neón",
+  "themeRetro": "Retro"
+}

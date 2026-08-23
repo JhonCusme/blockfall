@@ -1,0 +1,114 @@
+# Compila Blockfall para iOS y lo sube a TestFlight, sin necesidad de un Mac.
+#
+# GitHub presta máquinas macOS. En un repositorio privado del plan gratuito
+# tienes 2.000 minutos al mes, pero los de macOS **cuentan x10**: unos 200
+# minutos reales, que dan para 10-15 compilaciones. Por eso este flujo se
+# ejecuta solo a mano, nunca en cada push.
+#
+# ─────────────────────────────────────────────────────────────────────────
+# SECRETOS QUE HAY QUE CREAR
+# (GitHub → Settings → Secrets and variables → Actions → New repository secret)
+#
+#   BUILD_CERTIFICATE_BASE64    Certificado de distribución .p12 en base64
+#   P12_PASSWORD                Contraseña de ese .p12
+#   PROVISIONING_PROFILE_BASE64 Perfil .mobileprovision en base64
+#   APPLE_TEAM_ID               ID de equipo, 10 caracteres (developer.apple.com)
+#   APPSTORE_ISSUER_ID          App Store Connect → Integraciones → API
+#   APPSTORE_KEY_ID             Id de la clave de esa misma pantalla
+#   APPSTORE_PRIVATE_KEY        Contenido íntegro del archivo .p8
+#
+# Para pasar un archivo a base64 desde Windows (PowerShell):
+#   [Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\ruta\cert.p12")) | Set-Clipboard
+# ─────────────────────────────────────────────────────────────────────────
+
+name: iOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      subir:
+        description: '¿Subir a TestFlight al terminar?'
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Dependencias
+        run: flutter pub get
+
+      # Se comprueba antes de gastar minutos de macOS en compilar.
+      - name: Análisis y pruebas
+        run: |
+          flutter analyze
+          flutter test
+
+      - name: Importar certificado de firma
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}
+
+      - name: Instalar perfil de aprovisionamiento
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.PROVISIONING_PROFILE_BASE64 }}" | base64 --decode \
+            > ~/Library/MobileDevice/Provisioning\ Profiles/blockfall.mobileprovision
+
+      # El nombre del perfil se lee del propio archivo: así no hay que
+      # mantenerlo escrito en dos sitios.
+      - name: Preparar opciones de exportación
+        run: |
+          PERFIL=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/blockfall.mobileprovision \
+            | plutil -extract Name raw -)
+          echo "Perfil detectado: $PERFIL"
+          cat > ios/ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.cusme.blockfall</key>
+              <string>$PERFIL</string>
+            </dict>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+
+      - name: Compilar IPA
+        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+
+      - name: Guardar el IPA como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: blockfall-ios
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: error
+
+      - name: Subir a TestFlight
+        if: ${{ inputs.subir }}
+        uses: apple-actions/upload-testflight-build@v3
+        with:
+          app-path: build/ios/ipa/Blockfall.ipa
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}

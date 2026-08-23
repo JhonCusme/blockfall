@@ -1,0 +1,78 @@
+rules_version = '2';
+
+// Reglas de seguridad de Firestore para Blockfall.
+//
+// Copiar íntegro en: consola de Firebase → Firestore Database → Reglas →
+// Publicar.
+//
+// Por qué importan: sin reglas, cualquiera que extraiga la clave de la API del
+// APK (y se extrae en un minuto) puede escribir, editar o BORRAR el ranking
+// entero. La clave de API de Firebase no es un secreto; la seguridad real está
+// aquí.
+//
+// Estas reglas repiten a propósito las comprobaciones que ya hace la app. El
+// cliente se puede modificar; el servidor no. Si se cambia un límite aquí, hay
+// que cambiarlo también en ScoreValidator (lib/data/remote_repository.dart).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Las funciones tienen que ir DENTRO del bloque match, no en la raíz del
+    // archivo: fuera de aquí, Firestore rechaza el fichero por sintaxis.
+    function camposCorrectos(d) {
+      return d.keys().hasOnly(['mode', 'score', 'lines', 'level',
+                               'durationMs', 'uid', 'name', 'date'])
+          && d.keys().hasAll(['mode', 'score', 'lines', 'level',
+                              'durationMs', 'uid', 'name', 'date'])
+          && d.score is int
+          && d.lines is int
+          && d.level is int
+          && d.durationMs is int
+          && d.name is string
+          && d.mode is string
+          && d.uid is string;
+    }
+
+    function numerosPlausibles(d) {
+      return d.score > 0 && d.score <= 100000000
+          && d.lines >= 0 && d.lines <= 100000
+          && d.level >= 1 && d.level <= 10001
+          // Coherencia entre los números, igual que ScoreValidator.
+          && d.score <= d.lines * 5000 + 2000
+          && d.level <= (d.lines / 10) + 1
+          && d.durationMs >= d.lines * 250
+          && d.durationMs <= 43200000;
+    }
+
+    function datosCorrectos(d) {
+      return camposCorrectos(d)
+          && numerosPlausibles(d)
+          && d.name.size() <= 16
+          && d.mode in ['marathon', 'sprint', 'ultra', 'versus']
+          // La fecha la pone el servidor, no el cliente: si no, bastaría con
+          // cambiar la hora del móvil para colarse en el ranking de hoy.
+          && d.date == request.time;
+    }
+
+    match /leaderboards/{mode}/scores/{scoreId} {
+
+      // El ranking es público: se puede consultar incluso sin sesión.
+      allow read: if true;
+
+      // Crear: solo con sesión iniciada, a nombre propio, y con números que
+      // no sean imposibles.
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && datosCorrectos(request.resource.data);
+
+      // Una puntuación es un hecho consumado: no se edita ni se borra. Sin
+      // esto, cualquiera podría vaciar el ranking de los demás.
+      allow update, delete: if false;
+    }
+
+    // Todo lo que no esté declarado arriba queda cerrado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

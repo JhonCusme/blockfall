@@ -1,0 +1,55 @@
+name: blockfall
+description: Blockfall — juego de bloques que caen, para Android e iOS.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  flutter_riverpod: ^2.5.1
+  shared_preferences: ^2.3.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  audioplayers: ^6.1.0
+  google_fonts: ^6.2.1
+  google_mobile_ads: ^9.1.0
+  firebase_core: ^3.8.0
+  firebase_auth: ^5.3.3
+  cloud_firestore: ^5.5.0
+  connectivity_plus: ^6.1.0
+  google_sign_in: ^7.0.0
+  app_tracking_transparency: ^2.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  image: ^4.3.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/audio/
+
+# Generación del icono de la app.
+#   dart run tool/generate_icon.dart   (dibuja los PNG de origen)
+#   dart run flutter_launcher_icons    (produce todos los tamaños)
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/icon/icon.png
+  # Icono adaptativo de Android: el sistema recorta la capa frontal con la
+  # forma del lanzador, así que el fondo va aparte y liso.
+  adaptive_icon_background: "#0E0E14"
+  adaptive_icon_foreground: assets/icon/icon_foreground.png
+  # Monocromo para el "tema dinámico" de Android 13+.
+  adaptive_icon_monochrome: assets/icon/icon_foreground.png
+  remove_alpha_ios: true

@@ -1,0 +1,31 @@
+# Plantilla de la configuración de firma.
+#
+# Copia este archivo como  android/key.properties  y rellena tus valores.
+# Ese archivo SÍ contiene contraseñas: nunca se sube a un repositorio ni se
+# comparte. Ya está excluido en .gitignore.
+#
+# Para crear la clave, desde la carpeta android/ del proyecto:
+#
+#   keytool -genkey -v -keystore blockfall-upload.jks ^
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias blockfall
+#
+# (en PowerShell usa ` en lugar de ^ para partir la línea, o escríbela seguida)
+#
+# keytool pedirá una contraseña y algunos datos. Puedes dejar en blanco todo
+# menos el nombre; lo único imprescindible es recordar la contraseña.
+
+# Contraseña del almacén de claves.
+storePassword=LA_QUE_ELEGISTE
+
+# Contraseña de la clave. keytool suele usar la misma que la del almacén.
+keyPassword=LA_QUE_ELEGISTE
+
+# Nombre de la clave dentro del almacén (el -alias del comando de arriba).
+keyAlias=blockfall
+
+# Ruta al archivo .jks.
+#
+# Se resuelve desde android/app/, así que con el .jks en android/ la ruta
+# relativa es ../blockfall-upload.jks. También vale una ruta absoluta, que es
+# lo recomendable si guardas la clave fuera del proyecto.
+storeFile=../blockfall-upload.jks

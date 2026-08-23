@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blockfall</title>
+<style>
+  :root { --fondo:#0e0e14; --texto:#ececf2; --suave:#a0a0b0; --acento:#31c7ef; }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; min-height:100vh; display:flex; align-items:center;
+    justify-content:center; padding:2rem;
+    background:var(--fondo); color:var(--texto);
+    font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    text-align:center;
+  }
+  h1 { color:var(--acento); letter-spacing:.28em; font-size:2rem; margin:0 0 .4rem; }
+  p { color:var(--suave); margin:.3rem 0 1.6rem; }
+  a { color:var(--acento); }
+  .piezas { display:flex; gap:6px; justify-content:center; margin-bottom:1.6rem; }
+  .b { width:26px; height:26px; border-radius:5px; }
+  .cae { transform:translateY(-14px); }
+</style>
+</head>
+<body>
+<main>
+  <div class="piezas">
+    <div class="b" style="background:#ad4d9c"></div>
+    <div class="b cae" style="background:#31c7ef"></div>
+    <div class="b" style="background:#f7d308"></div>
+  </div>
+  <h1>BLOCKFALL</h1>
+  <p>Un juego de bloques que caen.</p>
+  <p><a href="/privacidad">Política de Privacidad</a></p>
+</main>
+</body>
+</html>

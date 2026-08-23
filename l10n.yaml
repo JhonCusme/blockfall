@@ -1,0 +1,13 @@
+# Configuración de traducciones.
+#
+# Los textos viven en lib/l10n/app_*.arb. Al compilar (o con
+# `flutter gen-l10n`) se genera lib/l10n/app_localizations.dart con la clase L.
+#
+# Para añadir un idioma: copiar app_es.arb a app_<código>.arb y traducir los
+# valores. No hace falta tocar nada más.
+arb-dir: lib/l10n
+template-arb-file: app_es.arb
+output-localization-file: app_localizations.dart
+output-dir: lib/l10n
+output-class: L
+nullable-getter: false
