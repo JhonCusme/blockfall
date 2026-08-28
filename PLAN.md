@@ -397,14 +397,32 @@ Hecho:
   `firebase_options.dart`) en vez de confiar en que un
   `GoogleService-Info.plist` quedara bien referenciado en el `.pbxproj` — eso
   no se puede verificar sin Mac, así que se evitó esa dependencia por completo
+- **Sign in with Apple** implementado. Obligatorio por la directriz 4.8 de
+  Apple: si una app ofrece un inicio de sesión de terceros (Google), tiene que
+  ofrecer también el de Apple como alternativa equivalente. Solo se muestra en
+  iOS/macOS (`isAppleSignInAvailable`); en Android no aparece — verificado en
+  el emulador. Añadido `ios/Runner/Runner.entitlements` con la capacidad
+  `com.apple.developer.applesignin`, y referenciado a mano en las tres
+  configuraciones de compilación del target Runner en el `.pbxproj` (con
+  cuidado de no tocar el target RunnerTests). Al crear el App ID en Apple hay
+  que activar ahí también la misma capacidad "Sign In with Apple"
+
+Certificado de distribución (`.p12`) y clave de API de App Store Connect
+(`.p8`) **reutilizados** de una app anterior del mismo desarrollador (Simba
+Rocket Cat): son de la cuenta, no de la app, así que no hace falta generarlos
+de nuevo. Solo es específico de Blockfall el App ID y el perfil de
+aprovisionamiento.
 
 Pendiente, todo del lado de Apple:
 
-1. Certificado de distribución (`.p12`) y perfil de aprovisionamiento
-2. Team ID y clave de API de App Store Connect (`.p8`)
-3. Cargar los 7 secretos en GitHub (ver `ios.yml`)
-4. Lanzar el flujo manualmente desde la pestaña Actions
-5. Probar el `.ipa` en un iPhone/iPad real vía TestFlight antes de enviar a
+1. Crear el App ID `com.cusme.blockfall` con la capacidad **Sign In with
+   Apple** activada
+2. Perfil de aprovisionamiento nuevo para ese App ID, con el certificado de
+   distribución ya existente
+3. Crear la app en App Store Connect
+4. Cargar los 7 secretos en GitHub (ver `ios.yml`)
+5. Lanzar el flujo manualmente desde la pestaña Actions
+6. Probar el `.ipa` en un iPhone/iPad real vía TestFlight antes de enviar a
    revisión — nada de esto se ha visto renderizado todavía, al no haber Mac
    para comprobarlo visualmente
 

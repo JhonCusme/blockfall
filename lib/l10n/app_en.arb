@@ -80,6 +80,7 @@
   "settingsNameLabel": "Your name on the ranking",
   "settingsNameHint": "Leave it empty to appear as \"Anonymous\"",
   "settingsSignIn": "Sign in with Google",
+  "settingsSignInApple": "Sign in with Apple",
   "settingsSignInHint": "Keeps your records if you switch phones or reinstall",
   "settingsSignedInAs": "Signed in as {name}",
   "settingsSignOut": "Sign out",

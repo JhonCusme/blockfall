@@ -51,7 +51,7 @@ final authUserProvider = StreamProvider<User?>((ref) {
 /// sesión, en vez de consultar el repositorio una sola vez.
 final isSignedInProvider = Provider<bool>((ref) {
   ref.watch(authUserProvider);
-  return ref.watch(remoteRepositoryProvider)?.isGoogleLinked ?? false;
+  return ref.watch(remoteRepositoryProvider)?.isSignedIn ?? false;
 });
 
 final accountNameProvider = Provider<String?>((ref) {

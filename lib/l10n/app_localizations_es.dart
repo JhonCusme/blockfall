@@ -242,6 +242,9 @@ class LEs extends L {
   String get settingsSignIn => 'Iniciar sesión con Google';
 
   @override
+  String get settingsSignInApple => 'Iniciar sesión con Apple';
+
+  @override
   String get settingsSignInHint =>
       'Conserva tus récords aunque cambies de móvil o reinstales';
 

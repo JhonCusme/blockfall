@@ -14,13 +14,16 @@ library;
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../firebase_options.dart';
 import '../game/game_engine.dart';
@@ -176,6 +179,16 @@ class RemoteRepository {
           .any((p) => p.providerId == 'google.com') ??
       false;
 
+  bool get isAppleLinked =>
+      _auth.currentUser?.providerData.any((p) => p.providerId == 'apple.com') ??
+      false;
+
+  bool get isSignedIn => isGoogleLinked || isAppleLinked;
+
+  /// El botón de Apple solo tiene sentido en iOS y macOS: es la plataforma
+  /// donde la directriz 4.8 de Apple lo exige al ofrecer Google Sign-In.
+  bool get isAppleSignInAvailable => Platform.isIOS || Platform.isMacOS;
+
   String? get accountName =>
       _auth.currentUser?.displayName ?? _auth.currentUser?.email;
 
@@ -259,13 +272,97 @@ class RemoteRepository {
     await setPlayerName(full.split(' ').first);
   }
 
-  /// Cierra la sesión de Google y vuelve a una cuenta anónima nueva, para que
-  /// el ranking siga funcionando.
-  Future<void> signOutGoogle() async {
+  /// Entra con Apple. Solo tiene sentido en iOS y macOS: es lo que exige la
+  /// directriz 4.8 de Apple cuando la app ya ofrece un inicio de sesión de
+  /// terceros como Google. En Android no se muestra el botón.
+  ///
+  /// Sigue el mismo patrón que [signInWithGoogle]: `linkWithCredential` para
+  /// ascender la cuenta anónima sin perder el historial, y si esa cuenta de
+  /// Apple ya existía en otro dispositivo, se entra con la que ya había.
+  Future<SignInOutcome> signInWithApple() async {
     try {
-      await GoogleSignIn.instance.signOut();
-    } catch (_) {
-      // Que falle el cierre en el lado de Google no debe impedir salir.
+      // El nonce es obligatorio para Firebase con Apple: protege contra que
+      // alguien reutilice una credencial de Apple interceptada en otra
+      // sesión. Apple recibe el hash; Firebase valida contra el original.
+      final rawNonce = _generateNonce();
+      final nonceSha256 = sha256.convert(utf8.encode(rawNonce)).toString();
+
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonceSha256,
+      );
+
+      final credential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      final current = _auth.currentUser;
+      if (current != null && current.isAnonymous) {
+        try {
+          await current.linkWithCredential(credential);
+          await _adoptAppleName(appleCredential);
+          return SignInOutcome.success;
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'credential-already-in-use' ||
+              e.code == 'email-already-in-use') {
+            await _auth.signInWithCredential(credential);
+            await _adoptAppleName(appleCredential);
+            return SignInOutcome.alreadyExisted;
+          }
+          rethrow;
+        }
+      }
+
+      await _auth.signInWithCredential(credential);
+      await _adoptAppleName(appleCredential);
+      return SignInOutcome.success;
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) {
+        return SignInOutcome.cancelled;
+      }
+      debugPrint('Apple Sign-In falló: ${e.code} ${e.message}');
+      return SignInOutcome.error;
+    } catch (e) {
+      debugPrint('Apple Sign-In falló: $e');
+      return SignInOutcome.error;
+    }
+  }
+
+  /// A diferencia de Google, Apple solo manda el nombre la primera vez que el
+  /// usuario autoriza la app. Si no llega aquí, no se podrá recuperar después.
+  Future<void> _adoptAppleName(AuthorizationCredentialAppleID cred) async {
+    if (playerName.isNotEmpty) return;
+    final given = cred.givenName?.trim();
+    if (given == null || given.isEmpty) return;
+    await setPlayerName(given);
+  }
+
+  /// Cadena aleatoria para el nonce. 32 bytes de origen criptográfico, no la
+  /// del paquete `math` normal: aquí sí importa que no sea predecible.
+  String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  /// Cierra la sesión, sea de Google o de Apple, y vuelve a una cuenta
+  /// anónima nueva para que el ranking siga funcionando.
+  ///
+  /// Apple no tiene un SDK con sesión propia que cerrar aparte de Firebase,
+  /// así que ese paso solo aplica a Google.
+  Future<void> signOut() async {
+    if (isGoogleLinked) {
+      try {
+        await GoogleSignIn.instance.signOut();
+      } catch (_) {
+        // Que falle el cierre en el lado de Google no debe impedir salir.
+      }
     }
     await _auth.signOut();
     await ensureSignedIn();

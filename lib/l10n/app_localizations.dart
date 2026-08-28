@@ -517,6 +517,12 @@ abstract class L {
   /// **'Iniciar sesión con Google'**
   String get settingsSignIn;
 
+  /// No description provided for @settingsSignInApple.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión con Apple'**
+  String get settingsSignInApple;
+
   /// No description provided for @settingsSignInHint.
   ///
   /// In es, this message translates to:

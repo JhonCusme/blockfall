@@ -242,6 +242,9 @@ class LEn extends L {
   String get settingsSignIn => 'Sign in with Google';
 
   @override
+  String get settingsSignInApple => 'Sign in with Apple';
+
+  @override
   String get settingsSignInHint =>
       'Keeps your records if you switch phones or reinstall';
 

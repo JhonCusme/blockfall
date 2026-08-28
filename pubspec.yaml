@@ -25,6 +25,8 @@ dependencies:
   connectivity_plus: ^6.1.0
   google_sign_in: ^7.0.0
   app_tracking_transparency: ^2.0.6
+  sign_in_with_apple: ^6.1.4
+  crypto: ^3.0.5
 
 dev_dependencies:
   flutter_test:

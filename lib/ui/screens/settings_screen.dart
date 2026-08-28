@@ -284,6 +284,9 @@ class _NameFieldState extends ConsumerState<_NameField> {
 /// Entrar con cuenta resuelve dos cosas que el modo anónimo no puede: el
 /// historial sobrevive a cambiar de teléfono o reinstalar, y no caduca a los
 /// 30 días de inactividad como sí hacen las cuentas anónimas.
+/// Iniciar o cerrar sesión. Muestra Google siempre, y Apple solo en
+/// iOS/macOS: ahí es obligatorio ofrecerlo en cuanto existe un botón de
+/// Google (directriz 4.8 de Apple), y en Android no tendría sentido.
 class _GoogleAccountTile extends ConsumerStatefulWidget {
   final BlockTheme theme;
 
@@ -296,12 +299,10 @@ class _GoogleAccountTile extends ConsumerStatefulWidget {
 class _GoogleAccountTileState extends ConsumerState<_GoogleAccountTile> {
   bool _busy = false;
 
-  Future<void> _signIn() async {
-    final repo = ref.read(remoteRepositoryProvider);
-    if (repo == null || _busy) return;
-
+  Future<void> _signIn(Future<SignInOutcome> Function() action) async {
+    if (_busy) return;
     setState(() => _busy = true);
-    final outcome = await repo.signInWithGoogle();
+    final outcome = await action();
     if (!mounted) return;
     setState(() => _busy = false);
 
@@ -323,7 +324,7 @@ class _GoogleAccountTileState extends ConsumerState<_GoogleAccountTile> {
     final repo = ref.read(remoteRepositoryProvider);
     if (repo == null || _busy) return;
     setState(() => _busy = true);
-    await repo.signOutGoogle();
+    await repo.signOut();
     if (mounted) setState(() => _busy = false);
   }
 
@@ -331,6 +332,7 @@ class _GoogleAccountTileState extends ConsumerState<_GoogleAccountTile> {
   Widget build(BuildContext context) {
     final theme = widget.theme;
     final t = L.of(context);
+    final repo = ref.read(remoteRepositoryProvider);
     final signedIn = ref.watch(isSignedInProvider);
     final name = ref.watch(accountNameProvider);
 
@@ -363,17 +365,30 @@ class _GoogleAccountTileState extends ConsumerState<_GoogleAccountTile> {
       );
     }
 
-    return ListTile(
-      onTap: _signIn,
-      leading: Icon(Icons.login_rounded, color: theme.accent),
-      title: Text(t.settingsSignIn, style: TextStyle(color: theme.text)),
-      subtitle: Text(
-        t.settingsSignInHint,
-        style: TextStyle(
-          color: theme.text.withValues(alpha: 0.55),
-          fontSize: 12,
+    return Column(
+      children: [
+        ListTile(
+          onTap: () => _signIn(() => repo!.signInWithGoogle()),
+          leading: Icon(Icons.login_rounded, color: theme.accent),
+          title: Text(t.settingsSignIn, style: TextStyle(color: theme.text)),
+          subtitle: Text(
+            t.settingsSignInHint,
+            style: TextStyle(
+              color: theme.text.withValues(alpha: 0.55),
+              fontSize: 12,
+            ),
+          ),
         ),
-      ),
+        if (repo?.isAppleSignInAvailable ?? false)
+          ListTile(
+            onTap: () => _signIn(() => repo!.signInWithApple()),
+            leading: Icon(Icons.apple, color: theme.text),
+            title: Text(
+              t.settingsSignInApple,
+              style: TextStyle(color: theme.text),
+            ),
+          ),
+      ],
     );
   }
 }

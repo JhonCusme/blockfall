@@ -120,6 +120,7 @@
   "settingsNameLabel": "Tu nombre en el ranking",
   "settingsNameHint": "Si lo dejas vacío aparecerás como «Anónimo»",
   "settingsSignIn": "Iniciar sesión con Google",
+  "settingsSignInApple": "Iniciar sesión con Apple",
   "settingsSignInHint": "Conserva tus récords aunque cambies de móvil o reinstales",
   "settingsSignedInAs": "Sesión iniciada como {name}",
   "@settingsSignedInAs": {
