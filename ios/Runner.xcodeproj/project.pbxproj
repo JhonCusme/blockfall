@@ -590,6 +590,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.cusme.blockfall;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				DEVELOPMENT_TEAM = J7YVMKKBNT;
+				PROVISIONING_PROFILE_SPECIFIER = "Blockfall AppStore";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
