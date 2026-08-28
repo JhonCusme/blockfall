@@ -64,6 +64,11 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<!-- Sin esto, Apple exige soportar las 4 orientaciones en iPad para
+	     permitir multitarea (Split View). Al declarar que el juego siempre
+	     ocupa la pantalla completa, queda exento de ese requisito. -->
+	<key>UIRequiresFullScreen</key>
+	<true/>
 
 	<!-- ═══════════════════ AdMob ═══════════════════
 	     Sin esta clave la app CIERRA al arrancar, igual que en Android. -->
