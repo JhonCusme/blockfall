@@ -33,11 +33,20 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
+
+      # Apple exige el SDK de iOS 26 (Xcode 26) para aceptar builds desde
+      # septiembre de 2026. El runner puede traer más de un Xcode instalado;
+      # se selecciona explícitamente el más reciente para no depender de
+      # cuál quede como "por defecto".
+      - name: Seleccionar el Xcode más reciente
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          xcodebuild -version
 
       - uses: subosito/flutter-action@v2
         with:
