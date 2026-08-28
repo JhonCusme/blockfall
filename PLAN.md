@@ -324,20 +324,23 @@ que registrar en Firebase **las dos huellas**: la de arriba y la que aparece en
 Play Console → Integridad de la aplicación, disponible solo después de subir la
 app por primera vez.
 
-### Fase 5 — Publicar en Google Play ⏳ en revisión
+### Fase 5 — Publicar en Google Play ✅ PUBLICADA
 
-Versión 1.0.0 enviada el 23 de agosto de 2026. Jugada y validada en un Samsung
-real antes de enviarla.
+Versión 1.0.0 publicada el 27 de agosto de 2026. Jugada y validada en un
+Samsung real antes de enviarla, y confirmada visible en la ficha pública de
+Play Store.
 
 Hecho: ficha en español, política de privacidad y página de eliminación de
-datos publicadas en Firebase Hosting, `app-ads.txt`, mensaje de consentimiento
-europeo configurado en AdMob, huella SHA-1 de subida registrada en Firebase.
+datos publicadas en Firebase Hosting, `app-ads.txt` (aún verificándose en
+AdMob), mensaje de consentimiento europeo configurado en AdMob, huella SHA-1
+de subida registrada en Firebase.
 
-Pendiente en cuanto se publique:
+Pendiente ahora que ya está publicada:
 
 1. Vincular la app en AdMob con la ficha de Play (mientras figure como no
    publicada, AdMob limita el relleno y se gana menos).
-2. AdMob → app-ads.txt → **Comprobar ahora**.
+2. Confirmar que `app-ads.txt` termina de verificarse en AdMob (normal que
+   tarde 24-48 h desde la publicación).
 3. Añadir en Firebase la **segunda huella SHA-1**, la del certificado de firma
    de Google (Play Console → Integridad de la aplicación). Sin ella el inicio
    de sesión con Google falla para quien instale desde la tienda.
@@ -376,9 +379,34 @@ Va **después** de la Fase 5, sobre una base ya publicada y estable.
 
 Estimación: 8–14 días. Es, por sí solo, más trabajo que las fases 1 y 2 juntas.
 
-### Fase 6 — iOS (más adelante)
+### Fase 6 — iOS ⏳ en preparación
 
-El código Flutter ya sirve. Necesitarás: un **Mac** con Xcode, **Apple Developer Program (99 USD/año)**, adaptar iconos y notch, y pasar la revisión de App Store (más estricta que Google).
+Cuenta de Apple Developer ya activa. Sin Mac disponible, así que se compila en
+GitHub Actions (`.github/workflows/ios.yml`), lanzado a mano por consumo de
+minutos. Ver [store/IOS.md](store/IOS.md) para la guía completa.
+
+Hecho:
+
+- Repositorio en GitHub: `github.com/JhonCusme/blockfall` (privado)
+- Firebase iOS creado y configurado en `firebase_options.dart`
+- AdMob iOS creado: App ID y los tres bloques (banner, intersticial,
+  bonificado) en `ads_config.dart` e `Info.plist`
+- `Info.plist`: solo vertical, permiso de seguimiento (ATT), redes SKAdNetwork
+- Google Sign-In en iOS resuelto **sin depender de Xcode**: el `CLIENT_ID` de
+  iOS se pasa explícito por código (`googleIosClientId` en
+  `firebase_options.dart`) en vez de confiar en que un
+  `GoogleService-Info.plist` quedara bien referenciado en el `.pbxproj` — eso
+  no se puede verificar sin Mac, así que se evitó esa dependencia por completo
+
+Pendiente, todo del lado de Apple:
+
+1. Certificado de distribución (`.p12`) y perfil de aprovisionamiento
+2. Team ID y clave de API de App Store Connect (`.p8`)
+3. Cargar los 7 secretos en GitHub (ver `ios.yml`)
+4. Lanzar el flujo manualmente desde la pestaña Actions
+5. Probar el `.ipa` en un iPhone/iPad real vía TestFlight antes de enviar a
+   revisión — nada de esto se ha visto renderizado todavía, al no haber Mac
+   para comprobarlo visualmente
 
 ---
 

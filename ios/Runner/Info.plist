@@ -66,11 +66,9 @@
 	</array>
 
 	<!-- ═══════════════════ AdMob ═══════════════════
-	     Sin esta clave la app CIERRA al arrancar, igual que en Android.
-	     Ahora mismo es el App ID de PRUEBA de Google para iOS.
-	     Sustituir por el real cuando exista la app de iOS en AdMob. -->
+	     Sin esta clave la app CIERRA al arrancar, igual que en Android. -->
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>ca-app-pub-9365652468083873~8602148358</string>
 
 	<!-- Texto del permiso de seguimiento (App Tracking Transparency).
 	     Apple lo exige para poder usar el identificador de publicidad; sin
@@ -132,9 +130,9 @@
 	</array>
 
 	<!-- ═══════════════════ Inicio de sesión con Google ═══════════════════
-	     El esquema de URL debe ser el CLIENT ID de iOS invertido, tal cual
-	     aparece en el GoogleService-Info.plist como REVERSED_CLIENT_ID.
-	     Pendiente hasta crear la app de iOS en Firebase. -->
+	     El esquema de URL es el CLIENT ID de iOS invertido (REVERSED_CLIENT_ID
+	     del GoogleService-Info.plist). Sin esto, Google Sign-In no puede volver
+	     a la app tras autenticar. -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -142,7 +140,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>PENDIENTE_REVERSED_CLIENT_ID</string>
+				<string>com.googleusercontent.apps.480651674209-uci10edmurl50kidglvs66542664kbg3</string>
 			</array>
 		</dict>
 	</array>

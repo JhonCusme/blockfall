@@ -40,6 +40,18 @@ import 'package:firebase_core/firebase_core.dart';
 const String googleServerClientId =
     '480651674209-k6ginl3a2f6t8610lq6ke57emm2dmi8f.apps.googleusercontent.com';
 
+/// Cliente OAuth de **iOS**, del `GoogleService-Info.plist` (campo
+/// `CLIENT_ID`, no `REVERSED_CLIENT_ID`).
+///
+/// En Android este dato lo obtiene el plugin solo, leyendo
+/// `google-services.json` a través del Gradle plugin. En iOS normalmente se
+/// lee de un `GoogleService-Info.plist` empaquetado en el proyecto de Xcode,
+/// pero como este proyecto se compila sin Xcode (vía GitHub Actions, sin
+/// Mac), no hay forma de verificar que ese archivo quedó bien referenciado en
+/// el `.pbxproj`. Pasar el ID aquí, explícito, evita depender de eso.
+const String googleIosClientId =
+    '480651674209-uci10edmurl50kidglvs66542664kbg3.apps.googleusercontent.com';
+
 class DefaultFirebaseOptions {
   const DefaultFirebaseOptions._();
 
@@ -54,9 +66,9 @@ class DefaultFirebaseOptions {
   static String get _storageBucket =>
       _projectId.isEmpty ? '' : '$_projectId.firebasestorage.app';
 
-  // --- iOS: pendiente hasta la fase de iOS ---
-  static const _iosApiKey = '';
-  static const _iosAppId = '';
+  // --- iOS ---
+  static const _iosApiKey = 'AIzaSyCxSGhmZ0CDSlqNLPxCZDXfYdeBGqsZd0Q';
+  static const _iosAppId = '1:480651674209:ios:c1908b58ff6d3f63806020';
   static const _iosBundleId = 'com.cusme.blockfall';
 
   /// ¿Hay datos suficientes para intentar conectar?

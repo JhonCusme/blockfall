@@ -61,12 +61,13 @@ const _realBannerAndroid = 'ca-app-pub-9365652468083873/8443930324';
 const _realInterstitialAndroid = 'ca-app-pub-9365652468083873/2920035705';
 const _realRewardedAndroid = 'ca-app-pub-9365652468083873/9231282864';
 
-/// iOS todavía no tiene bloques creados en AdMob.
+/// Comodín para lo que aún no exista. Hoy no queda ningún bloque pendiente,
+/// pero se deja definido por si se añade una plataforma nueva más adelante.
 const _pendiente = 'PENDIENTE';
 
-const _realBannerIos = _pendiente;
-const _realInterstitialIos = _pendiente;
-const _realRewardedIos = _pendiente;
+const _realBannerIos = 'ca-app-pub-9365652468083873/9200914151';
+const _realInterstitialIos = 'ca-app-pub-9365652468083873/9723658333';
+const _realRewardedIos = 'ca-app-pub-9365652468083873/7887832487';
 
 class AdIds {
   const AdIds._();

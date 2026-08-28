@@ -13,6 +13,7 @@
 library;
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -183,6 +184,10 @@ class RemoteRepository {
   Future<void> _initGoogle() async {
     if (_googleReady) return;
     await GoogleSignIn.instance.initialize(
+      // En Android este dato lo lee el plugin solo desde
+      // google-services.json. En iOS hace falta pasarlo explícito: ver el
+      // comentario de `googleIosClientId` en firebase_options.dart.
+      clientId: Platform.isIOS ? googleIosClientId : null,
       serverClientId: googleServerClientId,
     );
     _googleReady = true;
