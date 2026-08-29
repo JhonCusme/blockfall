@@ -55,3 +55,6 @@ android/key.properties
 # Artefactos de compilación y caché de herramientas.
 android/build/
 .firebase/
+
+# Firma de iOS: certificados y claves privadas. Nunca al repositorio.
+ios-signing/

@@ -266,6 +266,29 @@ class LEn extends L {
   String get signInRestored => 'We restored that account\'s history.';
 
   @override
+  String get settingsDeleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'Your Google or Apple sign-in will be removed. Scores you already submitted to the ranking will stay, no longer linked to you. This can\'t be undone.';
+
+  @override
+  String get deleteAccountConfirmCancel => 'Cancel';
+
+  @override
+  String get deleteAccountConfirmAccept => 'Delete';
+
+  @override
+  String get deleteAccountFailed =>
+      'Couldn\'t delete the account. Sign in again and retry.';
+
+  @override
+  String get deleteAccountSuccess => 'Your account was deleted.';
+
+  @override
   String get settingsSectionTheme => 'Theme';
 
   @override

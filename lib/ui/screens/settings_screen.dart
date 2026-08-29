@@ -328,6 +328,41 @@ class _GoogleAccountTileState extends ConsumerState<_GoogleAccountTile> {
     if (mounted) setState(() => _busy = false);
   }
 
+  Future<void> _confirmDeleteAccount() async {
+    final t = L.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t.deleteAccountConfirmTitle),
+        content: Text(t.deleteAccountConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t.deleteAccountConfirmCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              t.deleteAccountConfirmAccept,
+              style: const TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    final repo = ref.read(remoteRepositoryProvider);
+    if (repo == null || _busy) return;
+    setState(() => _busy = true);
+    final ok = await repo.deleteAccount();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(ok ? t.deleteAccountSuccess : t.deleteAccountFailed)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = widget.theme;
@@ -352,16 +387,28 @@ class _GoogleAccountTileState extends ConsumerState<_GoogleAccountTile> {
     }
 
     if (signedIn) {
-      return ListTile(
-        leading: Icon(Icons.verified_user_outlined, color: theme.accent),
-        title: Text(
-          t.settingsSignedInAs(name ?? ''),
-          style: TextStyle(color: theme.text),
-        ),
-        trailing: TextButton(
-          onPressed: _signOut,
-          child: Text(t.settingsSignOut),
-        ),
+      return Column(
+        children: [
+          ListTile(
+            leading: Icon(Icons.verified_user_outlined, color: theme.accent),
+            title: Text(
+              t.settingsSignedInAs(name ?? ''),
+              style: TextStyle(color: theme.text),
+            ),
+            trailing: TextButton(
+              onPressed: _signOut,
+              child: Text(t.settingsSignOut),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+            title: Text(
+              t.settingsDeleteAccount,
+              style: const TextStyle(color: Colors.redAccent),
+            ),
+            onTap: _confirmDeleteAccount,
+          ),
+        ],
       );
     }
 

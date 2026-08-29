@@ -131,6 +131,14 @@
   "signInNoServices": "Este dispositivo no tiene servicios de Google.",
   "signInRestored": "Recuperamos el historial de esa cuenta.",
 
+  "settingsDeleteAccount": "Eliminar cuenta",
+  "deleteAccountConfirmTitle": "¿Eliminar tu cuenta?",
+  "deleteAccountConfirmBody": "Se borrará tu acceso con Google o Apple. Tus puntuaciones ya publicadas en el ranking permanecerán, sin vincularse a ti. Esta acción no se puede deshacer.",
+  "deleteAccountConfirmCancel": "Cancelar",
+  "deleteAccountConfirmAccept": "Eliminar",
+  "deleteAccountFailed": "No se pudo eliminar la cuenta. Vuelve a iniciar sesión e inténtalo de nuevo.",
+  "deleteAccountSuccess": "Tu cuenta se eliminó correctamente.",
+
   "settingsSectionTheme": "Tema",
   "settingsSectionLanguage": "Idioma",
   "languageAuto": "Automático",

@@ -26,6 +26,11 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- Solo usa el cifrado estándar de HTTPS (Firebase, AdMob), que está
+	     exento. Con esto declarado, App Store Connect no vuelve a preguntar
+	     por el cumplimiento de exportación en cada build. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

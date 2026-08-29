@@ -368,6 +368,73 @@ class RemoteRepository {
     await ensureSignedIn();
   }
 
+  /// Borra la cuenta (Google o Apple) y su sesión de Firebase.
+  ///
+  /// Apple exige que esto se pueda hacer desde dentro de la app, no solo
+  /// mediante una página web (directriz 5.1.1(v)). El historial de
+  /// puntuaciones ya enviado no se toca: es un registro del ranking, no un
+  /// dato de la cuenta, y las reglas de Firestore no permiten borrarlo desde
+  /// el cliente (ver `firestore.rules`), igual que se explica en la página de
+  /// eliminación de cuenta.
+  ///
+  /// Firebase exige un inicio de sesión "reciente" para borrar una cuenta;
+  /// si ha pasado tiempo, se vuelve a autenticar con el mismo proveedor antes
+  /// de reintentar.
+  Future<bool> deleteAccount() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    try {
+      await user.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code != 'requires-recent-login') {
+        debugPrint('No se pudo borrar la cuenta: ${e.code}');
+        return false;
+      }
+      try {
+        if (isGoogleLinked) {
+          await _initGoogle();
+          final account = await GoogleSignIn.instance.authenticate();
+          final idToken = account.authentication.idToken;
+          if (idToken == null) return false;
+          await user.reauthenticateWithCredential(
+            GoogleAuthProvider.credential(idToken: idToken),
+          );
+        } else if (isAppleLinked) {
+          final rawNonce = _generateNonce();
+          final nonceSha256 = sha256.convert(utf8.encode(rawNonce)).toString();
+          final appleCredential = await SignInWithApple.getAppleIDCredential(
+            scopes: [AppleIDAuthorizationScopes.email],
+            nonce: nonceSha256,
+          );
+          await user.reauthenticateWithCredential(
+            OAuthProvider('apple.com').credential(
+              idToken: appleCredential.identityToken,
+              rawNonce: rawNonce,
+            ),
+          );
+        } else {
+          return false;
+        }
+        await user.delete();
+      } catch (e) {
+        debugPrint('Reautenticación fallida al borrar cuenta: $e');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('No se pudo borrar la cuenta: $e');
+      return false;
+    }
+
+    if (isGoogleLinked) {
+      try {
+        await GoogleSignIn.instance.signOut();
+      } catch (_) {}
+    }
+    await ensureSignedIn();
+    return true;
+  }
+
   /// Entra de forma anónima. Es suficiente para tener un identificador estable
   /// por instalación sin pedirle nada al jugador.
   Future<User?> ensureSignedIn() async {

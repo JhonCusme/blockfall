@@ -559,6 +559,48 @@ abstract class L {
   /// **'Recuperamos el historial de esa cuenta.'**
   String get signInRestored;
 
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar tu cuenta?'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountConfirmBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se borrará tu acceso con Google o Apple. Tus puntuaciones ya publicadas en el ranking permanecerán, sin vincularse a ti. Esta acción no se puede deshacer.'**
+  String get deleteAccountConfirmBody;
+
+  /// No description provided for @deleteAccountConfirmCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get deleteAccountConfirmCancel;
+
+  /// No description provided for @deleteAccountConfirmAccept.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get deleteAccountConfirmAccept;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la cuenta. Vuelve a iniciar sesión e inténtalo de nuevo.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta se eliminó correctamente.'**
+  String get deleteAccountSuccess;
+
   /// No description provided for @settingsSectionTheme.
   ///
   /// In es, this message translates to:

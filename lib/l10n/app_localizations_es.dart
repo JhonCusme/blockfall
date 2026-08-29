@@ -267,6 +267,29 @@ class LEs extends L {
   String get signInRestored => 'Recuperamos el historial de esa cuenta.';
 
   @override
+  String get settingsDeleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountConfirmTitle => '¿Eliminar tu cuenta?';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'Se borrará tu acceso con Google o Apple. Tus puntuaciones ya publicadas en el ranking permanecerán, sin vincularse a ti. Esta acción no se puede deshacer.';
+
+  @override
+  String get deleteAccountConfirmCancel => 'Cancelar';
+
+  @override
+  String get deleteAccountConfirmAccept => 'Eliminar';
+
+  @override
+  String get deleteAccountFailed =>
+      'No se pudo eliminar la cuenta. Vuelve a iniciar sesión e inténtalo de nuevo.';
+
+  @override
+  String get deleteAccountSuccess => 'Tu cuenta se eliminó correctamente.';
+
+  @override
   String get settingsSectionTheme => 'Tema';
 
   @override
