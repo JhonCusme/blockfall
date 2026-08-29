@@ -1,0 +1,65 @@
+# Genera capturas de pantalla de iOS con el tamaño de píxel EXACTO que exige
+# Apple, usando simuladores reales en las máquinas macOS de GitHub Actions.
+#
+# Las capturas de Google Play (1080×2400) no sirven aquí: Apple valida que
+# coincidan con la resolución nativa de un modelo de dispositivo concreto.
+# Al capturarlas desde un simulador real de Xcode, la resolución siempre es
+# la correcta sin tener que calcularla a mano.
+#
+# No hace falta firma ni certificados: los simuladores no la piden.
+
+name: Capturas iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Dependencias
+        run: flutter pub get
+
+      - name: Compilar para simulador (sin firma)
+        run: flutter build ios --simulator --debug
+
+      - name: Capturar iPhone (pantalla de 6.9")
+        run: |
+          set -e
+          UDID=$(xcrun simctl create BlockfallPhone "iPhone 16 Pro Max")
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" build/ios/iphonesimulator/Runner.app
+          xcrun simctl launch "$UDID" com.cusme.blockfall
+          sleep 8
+          mkdir -p screenshots
+          xcrun simctl io "$UDID" screenshot screenshots/iphone_6.9_menu.png
+          xcrun simctl shutdown "$UDID"
+
+      - name: Capturar iPad (pantalla de 13")
+        run: |
+          set -e
+          UDID=$(xcrun simctl create BlockfallPad "iPad Pro 13-inch (M4)")
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" build/ios/iphonesimulator/Runner.app
+          xcrun simctl launch "$UDID" com.cusme.blockfall
+          sleep 8
+          xcrun simctl io "$UDID" screenshot screenshots/ipad_13_menu.png
+          xcrun simctl shutdown "$UDID"
+
+      - name: Guardar capturas
+        uses: actions/upload-artifact@v4
+        with:
+          name: capturas-ios
+          path: screenshots/*.png
+          if-no-files-found: error
